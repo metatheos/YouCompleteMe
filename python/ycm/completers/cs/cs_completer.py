@@ -47,6 +47,7 @@ class CsharpCompleter( Completer ):
     'RestartServer': (lambda self, request_data: self._RestartServer( request_data )),
     'ServerRunning': (lambda self, request_data: self._ServerIsRunning()),
     'ServerReady': (lambda self, request_data: self._ServerIsReady()),
+    'SolutionFile': (lambda self, request_data: self._SolutionFile()),
     'GoToDefinition': (lambda self, request_data: self._GoToDefinition( request_data )),
     'GoToDeclaration': (lambda self, request_data: self._GoToDefinition( request_data )),
     'GoToDefinitionElseDeclaration': (lambda self, request_data: self._GoToDefinition( request_data ))
@@ -56,6 +57,7 @@ class CsharpCompleter( Completer ):
     super( CsharpCompleter, self ).__init__( user_options )
     self._omnisharp_port = None
     self._logger = logging.getLogger( __name__ )
+    self._solution_path = None
 
 
   def Shutdown( self ):
@@ -188,6 +190,8 @@ class CsharpCompleter( Completer ):
         # in a new visible window
         utils.SafePopen( command, stdout=fstdout, stderr=fstderr, shell=True )
 
+    self._solution_path = path_to_solutionfile
+
     self._logger.info( 'Starting OmniSharp server' )
 
 
@@ -253,6 +257,9 @@ class CsharpCompleter( Completer ):
     except:
       return False
 
+  def _SolutionFile( self ):
+    """ Find out which solution file server was started with """
+    return self._solution_path
 
   def _ServerLocation( self ):
     return 'http://localhost:' + str( self._omnisharp_port )
