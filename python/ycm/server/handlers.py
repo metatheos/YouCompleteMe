@@ -18,6 +18,7 @@
 # along with YouCompleteMe.  If not, see <http://www.gnu.org/licenses/>.
 
 from os import path
+import asyncore
 
 try:
   import ycm_core
@@ -173,6 +174,10 @@ def DebugInfo():
     pass
   return _JsonResponse( '\n'.join( output ) )
 
+@app.post( '/shutdown' )
+def Shutdown():
+  LOGGER.info( 'Received shutdown request' )
+  asyncore.close_all() #dirty: this relies on the implementation of waitress
 
 # The type of the param is Bottle.HTTPError
 @app.error( httplib.INTERNAL_SERVER_ERROR )

@@ -147,7 +147,12 @@ class YouCompleteMe( object ):
 
   def _ServerCleanup( self ):
     if self._IsServerAlive():
-      self._server_popen.terminate()
+      try:
+        BaseRequest.PostDataToHandler( BuildRequestData(),
+                                       'shutdown' )
+      except:
+#        self._server_popen.terminate() # maybe should do this to make sure server goes down?
+        pass
     utils.RemoveIfExists( self._temp_options_filename )
 
 
